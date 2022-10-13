@@ -19,7 +19,7 @@ public interface SmppSessionListener {
 	 * Called when a session is destroyed. Notice that this is not called when the session is unbound, it is called 
 	 * when the connection actually was disconnected.
 	 *  
-	 * @param session the {@link SmppSession} that was destroyed
+	 * @param session the {@link SmppSession}that was destroyed
 	 */
 	void destroyed(SmppSession session);
 	
