@@ -140,7 +140,7 @@ public class SmppServerTest {
 		SmppServer smppServer = new SmppServer(PORT, new PacketProcessor() {
 
 			@Override
-			public void processPacket(SmppRequest packet, ResponseSender responseSender) {
+			public void processPacket(long sessionId,SmppRequest packet, ResponseSender responseSender) {
 				
 				if (SubmitSm.class.isInstance(packet)) {
 					responseSender.send( Response.OK.withMessageId("12000") );
@@ -360,7 +360,7 @@ public class SmppServerTest {
 		SmppServer smppServer = new SmppServer(PORT, new PacketProcessor() {
 
 			@Override
-			public void processPacket(SmppRequest packet, ResponseSender responseSender) {
+			public void processPacket(long sessionId,SmppRequest packet, ResponseSender responseSender) {
 				if (packet.isBind()) {
 					responseSender.send( Response.INVALID_PASSWORD );
 					return;

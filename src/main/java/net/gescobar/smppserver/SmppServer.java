@@ -131,7 +131,7 @@ public class SmppServer {
 		this(port, new PacketProcessor() {
 			
 			@Override
-			public void processPacket(SmppRequest packet, ResponseSender responseSender) {
+			public void processPacket(long sessionId,SmppRequest packet, ResponseSender responseSender) {
 				responseSender.send( Response.OK );
 			}
 			

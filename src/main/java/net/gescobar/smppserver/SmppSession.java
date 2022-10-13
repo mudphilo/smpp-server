@@ -89,7 +89,7 @@ public class SmppSession extends SimpleChannelHandler {
 
 	}
 	
-	private int sessionId;
+	public int sessionId;
 
 	/**
 	 * The status of the session.
@@ -141,7 +141,6 @@ public class SmppSession extends SimpleChannelHandler {
 	 * 
 	 * @param sessionId
 	 * @param channel
-	 * @param sessionListener
 	 * @param packetProcessor
 	 */
 	public SmppSession(int sessionId, Channel channel, PacketProcessor packetProcessor) {
@@ -209,7 +208,7 @@ public class SmppSession extends SimpleChannelHandler {
 		ResponseSender responseSender = new OnlyOnceResponse( (PduRequest) pdu );
 
    	 	try {
-   	 		packetProcessor.processPacket( (SmppRequest) PacketMapper.map((PduRequest) pdu), responseSender );
+   	 		packetProcessor.processPacket(sessionId, (SmppRequest) PacketMapper.map((PduRequest) pdu), responseSender );
    	 	} catch (Exception f) {
    	 		log.error("Exception calling the packet processor: " + f.getMessage(), f);
    	 	}

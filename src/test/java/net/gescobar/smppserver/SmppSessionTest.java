@@ -29,6 +29,7 @@ public class SmppSessionTest {
 	
 	@Test
 	public void shouldCallCustomPacketProcessor() throws Exception {
+
 		PacketProcessor packetProcessor = mock(PacketProcessor.class);
 		SmppSession session = new SmppSession(495, mock(Channel.class), packetProcessor);
 		
@@ -37,14 +38,14 @@ public class SmppSessionTest {
 		
 		session.messageReceived(null, event);
 		
-		verify(packetProcessor).processPacket(any(SmppRequest.class), any(ResponseSender.class));
+		verify(packetProcessor).processPacket(session.sessionId,any(SmppRequest.class), any(ResponseSender.class));
 		
 	}
 	
 	private class DefaultPacketProcessor implements PacketProcessor {
 
 		@Override
-		public void processPacket(SmppRequest packet, ResponseSender responseSender) {
+		public void processPacket(long sessionId,SmppRequest packet, ResponseSender responseSender) {
 			if (Bind.class.isInstance(packet)) {
 				responseSender.send( Response.OK );
 			}
