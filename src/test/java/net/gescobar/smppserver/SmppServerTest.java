@@ -45,40 +45,50 @@ import com.cloudhopper.smpp.transcoder.PduTranscoder;
  */
 public class SmppServerTest {
 	
-	private final int PORT = 4444;
+	//private final int PORT = 18080;
 	
 	private final long DEFAULT_TIMEOUT = 5000;
 	
 	@Test
 	public void shouldCreateTranscieverSession() throws Exception {
-		shouldCreateSession(BindType.TRANSCIEVER);
+		int PORT = 10000;
+		shouldCreateSession(BindType.TRANSCIEVER, PORT);
 	}
 	
 	@Test
 	public void shouldCreateReceiverSession() throws Exception {
-		shouldCreateSession(BindType.RECEIVER);
+		int PORT = 10001;
+		shouldCreateSession(BindType.RECEIVER, PORT);
 	}
 	
 	@Test
 	public void shoudlCreateTransmitterSession() throws Exception {
-		shouldCreateSession(BindType.TRANSMITTER);
+
+		int PORT = 10002;
+		shouldCreateSession(BindType.TRANSMITTER, PORT);
 	}
 	
-	private void shouldCreateSession(BindType bindType) throws Exception {
-		
+	private void shouldCreateSession(BindType bindType, int PORT) throws Exception {
+
 		// start the SMPP Server
 		SmppServer smppServer = new SmppServer(PORT);
 		smppServer.start();
 			
 		try {
+
 			SmppBindType chBindType = SmppBindType.TRANSCEIVER;
+
 			if (BindType.RECEIVER.equals(bindType)) {
+
 				chBindType = SmppBindType.RECEIVER;
+
 			} else if (BindType.TRANSMITTER.equals(bindType)) {
+
 				chBindType = SmppBindType.TRANSMITTER;
+
 			}
 				
-			bind(chBindType);
+			bind(chBindType,PORT);
 					
 			assertSessionsCreated(smppServer, 1, DEFAULT_TIMEOUT);
 					
@@ -93,7 +103,8 @@ public class SmppServerTest {
 			Assert.assertEquals( smppServer.getCreatedSessions(), 1 );
 			Assert.assertEquals( smppServer.getDestroyedSessions(), 0 );
 			
-		} finally {	
+		} finally {
+
 			stopServer(smppServer, 1000);
 		}
 		
@@ -101,7 +112,8 @@ public class SmppServerTest {
 	
 	@Test
 	public void shouldAcceptMultipleConnections() throws Exception {
-		
+
+		int PORT = 10003;
 		// start the SMPP Server
 		SmppServer smppServer = new SmppServer(PORT);
 		smppServer.start();
@@ -109,7 +121,7 @@ public class SmppServerTest {
 		try {
 			
 			for (int i=0; i < 200; i++) {
-				bind(SmppBindType.TRANSCEIVER);
+				bind(SmppBindType.TRANSCEIVER, PORT);
 			}
 			
 			assertSessionsCreated(smppServer, 200, 5000);
@@ -122,7 +134,9 @@ public class SmppServerTest {
 	
 	@Test(dependsOnMethods="shouldCreateTranscieverSession")
 	public void shouldSetCustomMessageId() throws Exception {
-		
+
+		int PORT = 10004;
+
 		SmppServer smppServer = new SmppServer(PORT, new PacketProcessor() {
 
 			@Override
@@ -143,7 +157,7 @@ public class SmppServerTest {
 		
 		try {
 			
-			com.cloudhopper.smpp.SmppSession client = bind(SmppBindType.TRANSCEIVER);
+			com.cloudhopper.smpp.SmppSession client = bind(SmppBindType.TRANSCEIVER, PORT);
 			com.cloudhopper.smpp.pdu.SubmitSm submitSm = new com.cloudhopper.smpp.pdu.SubmitSm();
 			SubmitSmResp submitSmResp = client.submit(submitSm, DEFAULT_TIMEOUT);
 			
@@ -158,7 +172,9 @@ public class SmppServerTest {
 	
 	@Test
 	public void shouldSendRequestToClient() throws Exception {
-		
+
+		int PORT = 10005;
+
 		SmppServer smppServer = new SmppServer(PORT);
 		smppServer.start();
 		
@@ -177,7 +193,7 @@ public class SmppServerTest {
 			when(sessionHandler.firePduRequestReceived(any(PduRequest.class))).thenReturn(deliverSmResp);
 			
 			// bind and wait until the session is created
-			bind(SmppBindType.TRANSCEIVER, sessionHandler);
+			bind(SmppBindType.TRANSCEIVER, sessionHandler,PORT);
 			assertSessionsCreated(smppServer, 1, DEFAULT_TIMEOUT);
 			
 			// retrieve the session
@@ -203,13 +219,15 @@ public class SmppServerTest {
 	
 	@Test(expectedExceptions=IllegalArgumentException.class)
 	public void shouldFailSendingNullPacketToClient() throws Exception {
-		
+
+		int PORT = 10006;
+
 		SmppServer smppServer = new SmppServer(PORT);
 		smppServer.start();
 		
 		try {
 			// bind and wait until the session is created
-			bind(SmppBindType.TRANSCEIVER);
+			bind(SmppBindType.TRANSCEIVER, PORT);
 			assertSessionsCreated(smppServer, 1, 500);
 						
 			// retrieve the session
@@ -224,7 +242,9 @@ public class SmppServerTest {
 	
 	@Test(expectedExceptions=IllegalStateException.class)
 	public void shouldFailSendingPacketToClientWhileNotBound() throws Exception {
-		
+
+		int PORT = 10007;
+
 		SmppServer smppServer = new SmppServer(PORT);
 		smppServer.start();
 		
@@ -246,13 +266,15 @@ public class SmppServerTest {
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void shouldFailSecondBind() throws Exception {
-		
+
+		int PORT = 10008;
+
 		SmppServer smppServer = new SmppServer(PORT);
 		smppServer.start();
 		
 		try {
 			// bind and wait until the session is created
-			com.cloudhopper.smpp.SmppSession client = bind(SmppBindType.TRANSCEIVER);
+			com.cloudhopper.smpp.SmppSession client = bind(SmppBindType.TRANSCEIVER,PORT);
 			assertSessionsCreated(smppServer, 1, DEFAULT_TIMEOUT);
 						
 			WindowFuture<Integer,PduRequest,PduResponse> future = client.sendRequestPdu(new BindTransceiver(), 1000, true);
@@ -271,13 +293,15 @@ public class SmppServerTest {
 	
 	@Test
 	public void shouldCloseConnectionOnClientUnbind() throws Exception {
-		
+
+		int PORT = 10009;
+
 		SmppServer smppServer = new SmppServer(PORT);
 		smppServer.start();
 		
 		try {
 			// bind and check that a session was created
-			com.cloudhopper.smpp.SmppSession client = bind(SmppBindType.TRANSCEIVER);
+			com.cloudhopper.smpp.SmppSession client = bind(SmppBindType.TRANSCEIVER, PORT);
 			assertSessionsCreated(smppServer, 1, DEFAULT_TIMEOUT);
 			
 			SmppSession session = smppServer.getSessions().iterator().next();
@@ -293,7 +317,9 @@ public class SmppServerTest {
 	
 	@Test
 	public void shouldCloseConnectionOnServerUnbind() throws Exception {
-		
+
+		int PORT = 10010;
+
 		SmppServer smppServer = new SmppServer(PORT);
 		smppServer.start();
 		
@@ -308,7 +334,7 @@ public class SmppServerTest {
 			when(sessionHandler.firePduRequestReceived(any(PduRequest.class))).thenReturn(unbindResp);
 			
 			// bind and check that a session was created
-			bind(SmppBindType.TRANSCEIVER, sessionHandler);
+			bind(SmppBindType.TRANSCEIVER, sessionHandler,PORT);
 			assertSessionsCreated(smppServer, 1, DEFAULT_TIMEOUT);
 			
 			SmppSession session = smppServer.getSessions().iterator().next();
@@ -328,7 +354,9 @@ public class SmppServerTest {
 	
 	@Test
 	public void shouldFailCommandBeforeBind() throws Exception {
-		
+
+		int PORT = 10011;
+
 		SmppServer smppServer = new SmppServer(PORT, new PacketProcessor() {
 
 			@Override
@@ -373,7 +401,9 @@ public class SmppServerTest {
 	
 	@Test
 	public void shouldCallSmppSessionListener() throws Exception {
-		
+
+		int PORT = 10012;
+
 		SmppServer smppServer = new SmppServer(PORT);
 		smppServer.start();
 		
@@ -383,7 +413,7 @@ public class SmppServerTest {
 			smppServer.setSessionListener(listener);
 			
 			// bind and check that a session was created
-			com.cloudhopper.smpp.SmppSession client = bind(SmppBindType.TRANSCEIVER);
+			com.cloudhopper.smpp.SmppSession client = bind(SmppBindType.TRANSCEIVER, PORT);
 			assertSessionsCreated(smppServer, 1, DEFAULT_TIMEOUT);
 			
 			SmppSession session = smppServer.getSessions().iterator().next();
@@ -403,11 +433,11 @@ public class SmppServerTest {
 		
 	}
 	
-	private com.cloudhopper.smpp.SmppSession bind(SmppBindType bindType) throws Exception {
-		return bind(bindType, null);
+	private com.cloudhopper.smpp.SmppSession bind(SmppBindType bindType, int PORT) throws Exception {
+		return bind(bindType, null, PORT);
 	}
 	
-	private com.cloudhopper.smpp.SmppSession bind(SmppBindType bindType, SmppSessionHandler sessionHandler) 
+	private com.cloudhopper.smpp.SmppSession bind(SmppBindType bindType, SmppSessionHandler sessionHandler,int PORT)
 			throws Exception {
 		
 		DefaultSmppClient clientBootstrap = new DefaultSmppClient(Executors.newCachedThreadPool(), 1, null);

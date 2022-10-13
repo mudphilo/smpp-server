@@ -42,7 +42,7 @@ import com.cloudhopper.smpp.type.SmppChannelException;
  * <p>Starting the SMPP Server is as simple as instantiating this class and calling the {@link #start()} method:</p>
  * 
  * <pre>
- * 	SmppServer server = new SmppServer(4444);
+ * 	SmppServer server = new SmppServer(9044);
  * 	server.start();
  * 	...
  * 
@@ -123,7 +123,7 @@ public class SmppServer {
 	
 	/**
 	 * Constructor. Creates an instance with the specified port and default {@link PacketProcessor} and 
-	 * {@link SequenceNumberScheme} implementations.
+	 *  implementations.
 	 * 
 	 * @param port the server will accept connections in this port.
 	 */
@@ -140,7 +140,7 @@ public class SmppServer {
 	
 	/**
 	 * Constructor. Creates an instance with the specified port and {@link PacketProcessor} implementation. A
-	 * default {@link SequenceNumberScheme} implementation is used.
+	 * default implementation is used.
 	 * 
 	 * @param port the server will accept connections in this port. 
 	 * @param packetProcessor the {@link PacketProcessor} implementation that will process the SMPP messages.
