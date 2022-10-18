@@ -16,7 +16,8 @@
     <orderEntry type="library" name="Maven: com.cloudhopper:ch-commons-charset:3.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:2.0.3" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty:3.9.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.github.mudphilo:jmx-annotations:1.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.14.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.14.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.testng:testng:5.14" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.beanshell:bsh:2.0b4" level="project" />
